@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nginx-app
+  name: misc
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"     # Sync wave annotation to ensure the minimum time between syncs
@@ -24,4 +24,3 @@ spec:
     automated:
       selfHeal: true
       prune: true
-
