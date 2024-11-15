@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: adguardhome
+  namespace: default
+spec:
+  selector:
+    app: adguardhome
+  ports:
+    - name: tcp-53
+      protocol: TCP
+      port: 53
+      targetPort: 53
+    - name: udp-53
+      protocol: UDP
+      port: 53
+      targetPort: 53
+    - name: tcp-80
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: tcp-443
+      protocol: TCP
+      port: 443
+      targetPort: 443
+    - name: udp-443
+      protocol: UDP
+      port: 443
+      targetPort: 443
+    - name: tcp-3000
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+    - name: tcp-853
+      protocol: TCP
+      port: 853
+      targetPort: 853
+    - name: udp-784
+      protocol: UDP
+      port: 784
+      targetPort: 784
+    - name: udp-853
+      protocol: UDP
+      port: 853
+      targetPort: 853
+    - name: udp-8853
+      protocol: UDP
+      port: 8853
+      targetPort: 8853
+    - name: tcp-5443
+      protocol: TCP
+      port: 5443
+      targetPort: 5443
+    - name: udp-5443
+      protocol: UDP
+      port: 5443
+      targetPort: 5443
+  type: LoadBalancer
+  ipFamilyPolicy: PreferDualStack
