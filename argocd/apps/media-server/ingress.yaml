@@ -1,0 +1,66 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: media-server
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - jf.k.zee.im
+    - qb.k.zee.im
+    - radarr.k.zee.im
+    - jackett.k.zee.im
+    - bazarr.k.zee.im
+    secretName: wildcard-zee-im
+  rules:
+  - host: jf.k.zee.im
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: media-server-service
+            port:
+              number: 8096
+  - host: bazarr.k.zee.im
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: media-server-service
+            port:
+              number: 6767
+  - host: qb.k.zee.im
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: media-server-service
+            port:
+              number: 32080
+  - host: radarr.k.zee.im
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: media-server-service
+            port:
+              number: 7878
+  - host: jackett.k.zee.im
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: media-server-service
+            port:
+              number: 9119

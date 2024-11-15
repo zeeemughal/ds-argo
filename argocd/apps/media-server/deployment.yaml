@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: media-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: media-server
+  template:
+    metadata:
+      labels:
+        app: media-server
+    spec:
+      # initContainers:
+      # - name: init-create-folders
+      #   image: alpine
+      #   command:
+      #   - sh
+      #   - -c
+      #   - |
+      #     mkdir -p /mnt/storage/media/{movies,tv}
+      #     mkdir -p /mnt/storage/torrents/{movies,tv}
+      #     mkdir -p /mnt/storage/config/{bazarr,jackett,jf,qb,radarr}
+      #     # chown -R 1000:1000 /mnt/storage/media
+      #     # chown -R 1000:1000 /mnt/storage/torrents
+      #     # chown -R 1000:1000 /mnt/storage/config
+      #   volumeMounts:
+      #   - name: media-config
+      #     mountPath: /mnt/storage
+      containers:
+      - name: jellyfin
+        image: linuxserver/jellyfin:latest
+        ports:
+        - containerPort: 8096
+        volumeMounts:
+        - name: media-config
+          mountPath: /config  # Mount the "config" folder to /config
+          subPath: config/jf
+        - name: media-config
+          mountPath: /media
+          subPath: media
+        env:
+          - name: PUID
+            value: "1000"
+          - name: PGID
+            value: "1000"
+          - name: TZ
+            value: "Etc/UTC"
+      - name: jackett
+        image: linuxserver/jackett:latest
+        ports:
+        - containerPort: 9117
+        volumeMounts:
+        - name: media-config
+          mountPath: /config  # Mount the "config" folder to /config
+          subPath: config/jackett
+        - name: media-config
+          mountPath: /media
+          subPath: media
+        env:
+          - name: PUID
+            value: "1000"
+          - name: PGID
+            value: "1000"
+          - name: TZ
+            value: "Etc/UTC"
+      - name: bazarr
+        image: linuxserver/bazarr:latest
+        ports:
+        - containerPort: 6767
+        volumeMounts:
+        - name: media-config
+          mountPath: /config  # Mount the "config" folder to /config
+          subPath: config/bazarr
+        - name: media-config
+          mountPath: /media
+          subPath: media
+        env:
+          - name: PUID
+            value: "1000"
+          - name: PGID
+            value: "1000"
+          - name: TZ
+            value: "Etc/UTC"
+      - name: qb
+        image: 	linuxserver/qbittorrent:latest
+        ports:
+        - containerPort: 32080
+        volumeMounts:
+        - name: media-config
+          mountPath: /config
+          subPath: config/qb
+        - name: media-config
+          mountPath: /media
+          subPath: media
+        env:
+          - name: PUID
+            value: "1000"
+          - name: PGID
+            value: "1000"
+          - name: TZ
+            value: "Etc/UTC"
+          - name: WEBUI_PORT
+            value: "32080"
+      - name: radarr
+        image: 	ghcr.io/hotio/radarr
+        ports:
+        - containerPort: 7878
+        volumeMounts:
+        - name: media-config
+          mountPath: /config
+          subPath: config/radarr
+        - name: media-config
+          mountPath: /media
+          subPath: media
+        env:
+          - name: PUID
+            value: "1000"
+          - name: PGID
+            value: "1000"
+          - name: TZ
+            value: "Etc/UTC"
+          - name: UMASK
+            value: "002"
+      
+      volumes:
+      - name: media-config
+        persistentVolumeClaim:
+          claimName: media-server-pvc

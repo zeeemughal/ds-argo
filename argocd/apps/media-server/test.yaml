@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: media-server-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: media-server-test
+  template:
+    metadata:
+      labels:
+        app: media-server-test
+    spec:
+      initContainers:
+      - name: init-create-folders
+        image: alpine
+        command:
+        - sh
+        - -c
+        - |
+          sleep 60
+          mkdir -p /mnt/storage/media/{movies,tv}
+          mkdir -p /mnt/storage/torrents/{movies,tv}
+          mkdir -p /mnt/storage/config/{bazarr,jackett,jf,qb,radarr}
+          # chown -R 1000:1000 /mnt/storage/media
+          # chown -R 1000:1000 /mnt/storage/torrents
+          # chown -R 1000:1000 /mnt/storage/config
+        volumeMounts:
+        - name: media-config
+          mountPath: /mnt/storage
+      containers:
+      - name: jellyfin
+        image: linuxserver/jellyfin:latest
+        ports:
+        - containerPort: 8096
+        volumeMounts:
+        - name: media-config
+          mountPath: /config  # Mount the "config" folder to /config
+          subPath: config/jf
+        - name: media-config
+          mountPath: /media
+          subPath: media
+        env:
+          - name: PUID
+            value: "1000"
+          - name: PGID
+            value: "1000"
+          - name: TZ
+            value: "Etc/UTC"
+
+      volumes:
+      - name: media-config
+        persistentVolumeClaim:
+          claimName: media-server-pvc

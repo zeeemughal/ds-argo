@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-server-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs
+  resources:
+    requests:
+      storage: 100Gi
+  volumeName: pvc-67220377-8533-4b78-8e6c-70a05a9d98da # binding to existing volume. need to comment this line in case of new deployment
