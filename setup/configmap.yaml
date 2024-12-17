@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: registry-users
+  namespace: docker-registry
+data:
+  user1: password1
+  user2: password2
+  user3: password3
