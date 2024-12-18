@@ -1,0 +1,29 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: devsoul-portfolio-ingress
+  namespace: devsoul-portfolio
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-dns"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: "/"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+spec:
+  tls:
+  - hosts:
+    - portfolio.devsoul.net
+    secretName: devsoul-portfolio-tls
+
+  ingressClassName: nginx
+  rules:
+  - host: portfolio.devsoul.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: devsoul-portfolio
+            port:
+              number: 3000

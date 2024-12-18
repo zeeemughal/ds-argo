@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devsoul-portfolio
+  namespace: devsoul-portfolio
+  labels:
+    app: devsoul-portfolio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devsoul-portfolio
+  template:
+    metadata:
+      labels:
+        app: devsoul-portfolio
+    spec:
+      imagePullSecrets:
+        - name: devsoul-registry-secret
+      containers:
+      - name: devsoul-portfolio
+        image: repo.devsoul.net/devsoul-portfolio-next:latest
+        ports:
+        - containerPort: 3000
