@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: devsoul-portfolio
-  namespace: devsoul-portfolio
+  namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"     # Sync wave annotation to ensure the minimum time between syncs
     argocd.argoproj.io/sync-options: "--sync-wait 30"  # Sync options annotation to set the sync wait time to 60 seconds
