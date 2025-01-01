@@ -19,6 +19,6 @@ spec:
         - name: devsoul-registry-secret
       containers:
       - name: devsoul-portfolio
-        image: repo.devsoul.net/devsoul-portfolio-next:e58bb08c05d63b98811fc9fe01c83a11be008788
+        image: repo.devsoul.net/devsoul-portfolio-next:06fb3f8586f8ac859160bb74e2ae7b706e0e1edd
         ports:
         - containerPort: 3000
