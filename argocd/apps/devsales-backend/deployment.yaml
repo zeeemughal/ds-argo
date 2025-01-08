@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devsales-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devsales-backend
+  template:
+    metadata:
+      labels:
+        app: devsales-backend
+    spec:
+      volumes:
+        - name: data-volume
+          emptyDir: {}
+      initContainers:
+        - name: set-env
+          image: python:3.9-slim
+          command:
+            - /bin/bash
+            - -c
+          args:
+            - |
+              set -e
+              apt-get update
+              apt-get install -y wget python3-pip
+              pip install pymongo
+              cd /data
+              wget -O variables.py https://raw.githubusercontent.com/DevSoul-network/scripts/main/variables.py
+              echo "Project value is: ${PROJECT}"
+              python3 -c "import os; print(f'Python sees PROJECT as: {os.getenv(\"PROJECT\")}')"
+              python3 variables.py "${PROJECT}"
+              ls -la /data
+          env:
+            - name: PROJECT
+              value: "dev-pos"
+            - name: MONGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-credentials-secret
+                  key: MONGO_URL
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+      containers:
+        - name: devsales-backend
+          image: repo.devsoul.net/devsales:latest
+          ports:
+            - containerPort: 8081
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+          env:
+            - name: ENV_FILE
+              value: "/data/.env"
+      imagePullSecrets:
+        - name: devsoul-registry-secret
