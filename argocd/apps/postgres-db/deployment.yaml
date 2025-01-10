@@ -15,34 +15,14 @@ spec:
         app: postgres
     spec:
       securityContext:
-        fsGroup: 999
+        fsGroup: 1000
         fsGroupChangePolicy: "Always"
-      initContainers:
-      - name: init-chmod-data
-        image: busybox
-        securityContext:
-          runAsUser: 0
-          runAsGroup: 0
-          privileged: true
-        command:
-        - sh
-        - -c
-        - |
-          echo "Initializing permissions..."
-          mkdir -p /mnt/data
-          chmod -R 0700 /mnt/data
-          chown -R 999:999 /mnt/data
-          echo "Permissions set:"
-          ls -la /mnt/data
-        volumeMounts:
-        - name: postgres-storage
-          mountPath: /mnt/data
       containers:
       - name: postgres
         image: postgres:latest
         securityContext:
-          runAsUser: 999
-          runAsGroup: 999
+          runAsUser: 1000
+          runAsGroup: 1000
         ports:
         - containerPort: 5432
         envFrom:
