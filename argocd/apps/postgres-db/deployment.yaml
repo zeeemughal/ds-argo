@@ -16,6 +16,7 @@ spec:
     spec:
       securityContext:
         fsGroup: 999
+        fsGroupChangePolicy: "OnRootMismatch"
       initContainers:
       - name: init-chmod-data
         image: busybox
@@ -23,6 +24,8 @@ spec:
           runAsUser: 0
           runAsGroup: 0
           privileged: true
+          capabilities:
+            add: ["DAC_OVERRIDE", "CHOWN", "FOWNER"]
         command:
         - sh
         - -c
