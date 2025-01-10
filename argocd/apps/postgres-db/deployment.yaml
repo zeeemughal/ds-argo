@@ -16,7 +16,7 @@ spec:
     spec:
       securityContext:
         fsGroup: 999
-        fsGroupChangePolicy: "OnRootMismatch"
+        fsGroupChangePolicy: "Always"
       initContainers:
       - name: init-chmod-data
         image: busybox
@@ -24,21 +24,19 @@ spec:
           runAsUser: 0
           runAsGroup: 0
           privileged: true
-          capabilities:
-            add: ["DAC_OVERRIDE", "CHOWN", "FOWNER"]
         command:
         - sh
         - -c
         - |
           echo "Initializing permissions..."
-          mkdir -p /mnt/data
-          chmod -R 0700 /mnt/data
-          chown -R 999:999 /mnt/data
+          mkdir -p /var/lib/postgresql/data
+          chmod -R 0700 /var/lib/postgresql/data
+          chown -R 999:999 /var/lib/postgresql/data
           echo "Permissions set:"
-          ls -la /mnt/data
+          ls -la /var/lib/postgresql/data
         volumeMounts:
         - name: postgres-storage
-          mountPath: /mnt/data
+          mountPath: /var/lib/postgresql/data
       containers:
       - name: postgres
         image: postgres:latest
@@ -52,10 +50,10 @@ spec:
             name: postgres-secret
         env:
         - name: PGDATA
-          value: /mnt/data/pgdata
+          value: /var/lib/postgresql/data/pgdata
         volumeMounts:
         - name: postgres-storage
-          mountPath: /mnt/data
+          mountPath: /var/lib/postgresql/data
         readinessProbe:
           exec:
             command: ["pg_isready", "-U", "postgres"]
