@@ -29,14 +29,14 @@ spec:
         - -c
         - |
           echo "Initializing permissions..."
-          mkdir -p /var/lib/postgresql/data
-          chmod -R 0700 /var/lib/postgresql/data
-          chown -R 999:999 /var/lib/postgresql/data
+          mkdir -p /mnt/data
+          chmod -R 0700 /mnt/data
+          chown -R 999:999 /mnt/data
           echo "Permissions set:"
-          ls -la /var/lib/postgresql/data
+          ls -la /mnt/data
         volumeMounts:
         - name: postgres-storage
-          mountPath: /var/lib/postgresql/data
+          mountPath: /mnt/data
       containers:
       - name: postgres
         image: postgres:latest
