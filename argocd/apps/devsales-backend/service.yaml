@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: devsales-backend
+  namespace: devsales-backend
+spec:
+  ports:
+  - name: devsales-backend
+    port: 3001
+    targetPort: 3001
+  selector:
+    app: devsales-backend
+  type: ClusterIP
