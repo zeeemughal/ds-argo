@@ -12,12 +12,12 @@ metadata:
 spec:
   tls:
   - hosts:
-    - dev-apidevsales.devsoul.net
+    - apidevsales-dev.devsoul.net
     secretName: devsales-backend-tls
 
   ingressClassName: nginx
   rules:
-  - host: dev-apidevsales.devsoul.net
+  - host: apidevsales-dev.devsoul.net
     http:
       paths:
       - path: /
