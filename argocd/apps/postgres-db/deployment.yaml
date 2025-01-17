@@ -35,6 +35,8 @@ spec:
           value: trust
         - name: POSTGRES_INITDB_ARGS
           value: "--auth-host=trust --auth-local=trust"
+        - name: POSTGRES_CONF_EXTRA
+          value: "listen_addresses = '*'"
         volumeMounts:
         - name: postgres-storage
           mountPath: /var/lib/postgresql/data
