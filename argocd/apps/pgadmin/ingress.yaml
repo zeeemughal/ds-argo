@@ -17,11 +17,11 @@ metadata:
 spec:
   tls:
   - hosts:
-    - devpgadmin.devsoul.net
+    - pgadmin.devsoul.net
     secretName: devpgadmin-tls
   ingressClassName: nginx
   rules:
-  - host: devpgadmin.devsoul.net
+  - host: pgadmin.devsoul.net
     http:
       paths:
       - path: /static/(.*)
