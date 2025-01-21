@@ -19,7 +19,7 @@ spec:
         - name: devsoul-registry-secret
       containers:
       - name: devsales-backend
-        image: repo.devsoul.net/devsales-backend:f287655e96c8ea0089b7d8fc8c61424f3500b3a2
+        image: repo.devsoul.net/devsales-backend:cbbf6780fa645a02f70e408db1011b43ede19066
         ports:
         - containerPort: 3001
         envFrom:
