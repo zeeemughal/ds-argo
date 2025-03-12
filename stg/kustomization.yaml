@@ -1,0 +1,71 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - application.yaml
+  - ./appsets
+
+patches:
+  # Patch for all ArgoCD applications that use Helm charts to use specific values file(s) in kind environment
+  - target:
+      group: "argoproj.io"
+      version: "v1alpha1"
+      kind: Application
+      namespace: argocd
+      labelSelector: deploymentStrategy=helm
+    patch: |-
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: not-important
+        namespace: argocd
+        labels:
+          deploymentStrategy: helm
+      spec:
+        source:
+          helm:
+            valueFiles:
+              - values.yaml
+  # Patch for all ArgoCD applications for enabling cascade delete of applications and their resources
+  # https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/
+  - target:
+      group: "argoproj.io"
+      version: "v1alpha1"
+      kind: Application
+    patch: |-
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        metadata:
+          name: any-name
+          namespace: argocd
+          finalizers:
+            - resources-finalizer.argocd.argoproj.io
+# Patch for all ArgoCD applications to change git branch for testing new apps
+  - target:
+      group: "argoproj.io"
+      version: "v1alpha1"
+      kind: Application
+      namespace: argocd
+    patch: |-
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        metadata:
+          name: any-name
+          namespace: argocd
+        spec:
+          source:
+            targetRevision: master
+# Patch for api-payments to change the git branch for testing new apps
+  - target:
+      group: "argoproj.io"
+      version: "v1alpha1"
+      kind: Application
+      labelSelector: api-payments-revision=true
+    patch: |-
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: any-name
+      spec:
+        source:
+          targetRevision: farhanumar/api-payments-workflow

@@ -1,0 +1,57 @@
+kind: ApplicationSet
+metadata:
+  name: api-payments
+  namespace: argocd
+spec:
+  generators:
+    - matrix:
+        generators:
+          - git:
+              files:
+                - path: gitops.yaml
+              repoURL: 'git@github.com:zeeshan-maqbool/api-payments.git'
+              revision: HEAD
+          - list:
+              elementsYaml: '{{ .apps | toJson }}'
+            selector:
+              matchLabels:
+                clusterEnv: stg-00
+                clusterGroup: cde
+  goTemplate: true
+  goTemplateOptions:
+    - missingkey=error
+  template:
+    metadata:
+      labels:
+        app: '{{.name}}'
+        env: '{{.env}}'
+      name: '{{.name}}-{{.env}}'
+    spec:
+      destination:
+        name: in-cluster
+        namespace: '{{dig "namespace" "ops" .}}'
+      project: default
+      source:
+        path: '{{dig "repoPath" "helm/cde" .}}'
+        repoURL: 'git@github.com:zeeshan-maqbool/api-payments.git'
+        targetRevision: '{{dig "revision" "HEAD" .}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+  templatePatch: |
+    spec:
+      source:
+        helm:
+          valueFiles:
+          {{ if dig "sharedValues" "" . }}
+            - {{ dig "sharedValues" "" . }}
+          {{ end }}
+          {{ if eq .env "dev" }}
+            - {{ dig "values" "values-sandbox.yaml" . }}
+          {{ end }}
+          {{ if eq .env "stg" }}
+            - {{ dig "values" "values-staging.yaml" . }}
+          {{ end }}
