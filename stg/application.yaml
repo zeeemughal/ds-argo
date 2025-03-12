@@ -13,7 +13,7 @@ spec:
   source:
     path: stg/
     repoURL: 'https://github.com/zeeemughal/ds-argo.git'
-    targetRevision: 'master'
+    targetRevision: 'main'
   syncPolicy:
     automated:
       prune: true
