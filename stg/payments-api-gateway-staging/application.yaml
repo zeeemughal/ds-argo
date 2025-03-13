@@ -1,0 +1,25 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: api-payments-staging
+  labels:
+    api-payments-revision: "true"
+spec:
+  source:
+    path: 'helm/cde'
+    repoURL: 'git@github.com:zeeshan-maqbool/api-payments.git'
+    targetRevision: 'main'
+    helm:
+      valueFiles:
+      - values-staging.yaml
+  project: default
+  destination:
+    namespace: api-payments-stg
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
