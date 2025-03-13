@@ -55,7 +55,7 @@ patches:
           namespace: argocd
         spec:
           source:
-            targetRevision: 'naster'
+            targetRevision: 'main'
 # Patch for api-payments to change the git branch for testing new apps
   - target:
       group: "argoproj.io"
