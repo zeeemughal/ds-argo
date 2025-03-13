@@ -9,7 +9,7 @@ spec:
   source:
     path: 'helm/cde'
     repoURL: 'git@github.com:zeeshan-maqbool/api-payments.git'
-    targetRevision: 'main'
+    targetRevision: 'master'
     helm:
       valueFiles:
       - values-staging.yaml
