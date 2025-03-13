@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: api-payments-staging
+  name: api-payments-stg
   labels:
     api-payments-revision: "true"
 spec:
