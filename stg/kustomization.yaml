@@ -55,7 +55,7 @@ patches:
           namespace: argocd
         spec:
           source:
-            targetRevision: main
+            targetRevision: 'main'
 # Patch for api-payments to change the git branch for testing new apps
   - target:
       group: "argoproj.io"
@@ -69,4 +69,4 @@ patches:
         name: any-name
       spec:
         source:
-          targetRevision: main
+          targetRevision: 'main'
